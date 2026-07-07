@@ -11,6 +11,8 @@ import { createExplode } from './explode.js';
 import { createDemo } from './demo.js';
 
 const viewport = document.getElementById('viewport');
+const isCompactLayout = () =>
+  window.matchMedia('(max-width: 760px), (max-width: 900px) and (max-height: 520px)').matches;
 
 // ---------------------------------------------------------------- renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -34,8 +36,8 @@ const pmrem = new THREE.PMREMGenerator(renderer);
 scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
 scene.environmentIntensity = 0.45;
 
-const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 500);
-const HOME_CAM = new THREE.Vector3(27, 17, 30);
+const camera = new THREE.PerspectiveCamera(isCompactLayout() ? 50 : 42, 1, 0.1, 500);
+const HOME_CAM = isCompactLayout() ? new THREE.Vector3(34, 20, 38) : new THREE.Vector3(27, 17, 30);
 camera.position.copy(HOME_CAM);
 
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -90,6 +92,7 @@ function select(comp) {
 
 const chkLabels = document.getElementById('chk-labels');
 const btnLabels = document.getElementById('btn-labels');
+if (isCompactLayout()) chkLabels.checked = false;
 const labelMgrs = [createLabels(components, select)];
 const setLabelsVisible = (v) => {
   const visible = !!v;
@@ -98,6 +101,7 @@ const setLabelsVisible = (v) => {
   btnLabels.textContent = visible ? 'Hide Labels' : 'Show Labels';
   btnLabels.classList.toggle('active', visible);
 };
+setLabelsVisible(chkLabels.checked);
 const dims = createDimensions(scene);
 const explode = createExplode(components);
 createInteractions({ renderer, camera, components, onSelect: select });
@@ -255,6 +259,7 @@ window.__step = (toSeconds) => {
 function onResize() {
   const w = viewport.clientWidth, h = viewport.clientHeight;
   camera.aspect = w / h;
+  camera.fov = isCompactLayout() ? 50 : 42;
   camera.updateProjectionMatrix();
   renderer.setSize(w, h);
   labelRenderer.setSize(w, h);
