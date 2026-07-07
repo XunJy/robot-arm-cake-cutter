@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Robotic Ultrasonic Cake Cutting Machine — 3D Design</title>
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <header id="titlebar">
+    <div class="title-left">
+      <span class="logo-chip">TS</span>
+      <div>
+        <h1>Robotic Ultrasonic Cake Cutting Machine</h1>
+        <p>Interactive 3D Design &nbsp;·&nbsp; Safe Sink Motion &nbsp;·&nbsp; L2800 × W1700 × H2100 mm &nbsp;·&nbsp; ABB IRB 1200</p>
+      </div>
+    </div>
+    <div class="title-right">
+      <button id="btn-explode" class="btn">Explode View</button>
+      <button id="btn-demo" class="btn btn-primary">Run Demo</button>
+      <button id="btn-reset-view" class="btn">Reset View</button>
+    </div>
+  </header>
+
+  <aside id="sidebar">
+    <div class="panel-block">
+      <h2>Display</h2>
+      <label class="toggle"><input type="checkbox" id="chk-labels" checked /><span>Component Labels</span></label>
+      <label class="toggle"><input type="checkbox" id="chk-dims" /><span>Dimensions</span></label>
+      <button id="btn-labels" class="btn btn-wide active">Hide Labels</button>
+    </div>
+    <div class="panel-block">
+      <h2>Actions</h2>
+      <div id="action-buttons" class="action-list"></div>
+    </div>
+    <div class="panel-block grow">
+      <h2>Components</h2>
+      <ul id="component-tree"></ul>
+    </div>
+    <div class="panel-block hint">
+      <p>Drag to orbit · Scroll to zoom · Right-drag to pan · Click a component for details</p>
+    </div>
+  </aside>
+
+  <aside id="infopanel" class="hidden">
+    <button id="info-close" title="Close">×</button>
+    <h2 id="info-title">Component</h2>
+    <p id="info-subtitle"></p>
+    <table id="info-table"></table>
+  </aside>
+
+  <div id="viewport"></div>
+  <div id="loading-overlay"><div class="spinner"></div><p>Loading ABB IRB 1200 …</p></div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
