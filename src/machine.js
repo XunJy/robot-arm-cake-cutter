@@ -292,36 +292,30 @@ function buildOperatorPanel() {
 function buildLimitStop() {
   const g = new THREE.Group();
   const X = PLATE_X + 0.01; // inner face sits just ahead of the cake front edge
-  const FRONT_Z = 5.45;
-  const GUIDE_ZS = [3.2, 4.75];
-  const BEAM_CENTER_Z = 1.25;
-  const BEAM_DEPTH = 8.4; // rear edge stops at z=-2.95, leaving the wash side clear
+  const GUIDE_ZS = [-3.0, 3.0];
 
-  // Front-mounted cantilever locating plate. The rear/wash side is deliberately
-  // open so the robot can swing the blade to the sink without hitting this unit.
-  box(g, 0.86, 0.32, 0.36, MAT.brushed, X, BELT_TOP + 0.1, FRONT_Z);
-  box(g, 0.48, 4.25, 0.42, MAT.alu, X - 0.22, 10.55, FRONT_Z);
-  box(g, 0.48, 4.25, 0.42, MAT.alu, X + 0.22, 10.55, FRONT_Z);
-  box(g, 0.95, 0.28, BEAM_DEPTH, MAT.brushed, X, 12.7, BEAM_CENTER_Z);
-  box(g, 0.55, 0.18, BEAM_DEPTH - 0.45, MAT.aluDark, X, 12.28, BEAM_CENTER_Z + 0.18);
-  box(g, 0.55, 0.7, 0.24, MAT.steel, X, 12.28, BEAM_CENTER_Z - BEAM_DEPTH / 2 + 0.15);
-  cyl(g, 0.34, 1.45, MAT.alu, X, 13.55, 4.1, 'y', 20);
-  box(g, 0.8, 0.12, 0.8, MAT.black, X, 14.28, 4.1);
-  box(g, 0.8, 0.12, 0.8, MAT.black, X, 12.9, 4.1);
-  cyl(g, 0.06, 0.28, MAT.btnBlue, X + 0.4, 14.08, 4.3, 'x', 8);
-  for (const sz of GUIDE_ZS) {
-    cyl(g, 0.22, 0.55, MAT.steel, X, 12.95, sz, 'y', 16);
+  // Match the upstream positioning pusher: a gate-style cross beam with
+  // support shafts on both conveyor rails, so both locating units read as one
+  // paired mechanism instead of two unrelated designs.
+  for (const sz of [-5.4, 5.4]) {
+    cyl(g, 0.14, 4.4, MAT.chrome, X, 10.6, sz, 'y', 16);
+    cyl(g, 0.26, 0.12, MAT.steel, X, 8.45, sz, 'y', 16);
   }
+  box(g, 0.95, 0.28, 11.2, MAT.brushed, X, 12.7, 0);
+  cyl(g, 0.36, 1.5, MAT.alu, X, 13.6, 0, 'y', 20);
+  box(g, 0.85, 0.12, 0.85, MAT.black, X, 14.4, 0);
+  box(g, 0.85, 0.12, 0.85, MAT.black, X, 12.9, 0);
+  cyl(g, 0.07, 0.3, MAT.btnBlue, X + 0.42, 14.2, 0.2, 'x', 8);
+  for (const sz of GUIDE_ZS) cyl(g, 0.22, 0.6, MAT.steel, X, 12.95, sz, 'y', 16);
 
   const moving = new THREE.Group();
-  box(moving, 0.46, 0.16, 5.95, MAT.steel, X, 9.88, 0.05);
-  for (const sz of GUIDE_ZS) cyl(moving, 0.09, 4.0, MAT.chrome, X, 11.45, sz, 'y', 12);
-  cyl(moving, 0.08, 3.25, MAT.chrome, X, 11.22, 4.1, 'y', 12);
+  box(moving, 0.5, 0.16, 7.0, MAT.steel, X, 9.9, 0);
+  for (const sz of GUIDE_ZS) cyl(moving, 0.09, 4.1, MAT.chrome, X, 11.5, sz, 'y', 12);
+  cyl(moving, 0.09, 3.4, MAT.chrome, X, 11.3, 0, 'y', 12);
   const plateMat = new THREE.MeshStandardMaterial({ color: 0xd8cfa4, metalness: 0.3, roughness: 0.55 });
-  box(moving, 0.18, 1.0, 5.75, plateMat, X, BELT_TOP + 0.58, 0);
-  box(moving, 0.22, 0.08, 5.85, MAT.steel, X, BELT_TOP + 0.08, 0);
+  box(moving, 0.18, 1.1, 7.0, plateMat, X + 0.06, 9.17, 0);
   moving.userData.downY = 0;
-  moving.userData.upY = 1.65;
+  moving.userData.upY = 1.35;
   moving.userData.setEngaged = (k) => {
     const t = THREE.MathUtils.clamp(k, 0, 1);
     moving.position.y = moving.userData.upY * (1 - t);
@@ -533,9 +527,9 @@ export function buildMachine(scene) {
     ]);
   reg(components, 'limitStop', 'Limit Stop Unit', '限位机构', limit.group,
     V(PLATE_X, 9.55, 3.1), V(6.2, 12.4, -4.2), V(0.5, 1.4, 2), [
-      ['Type', 'Front cantilever drop-down plate'], ['Stroke', 'Vertical lift, wash side open'],
+      ['Type', 'Gate-style drop-down locating plate'], ['Stroke', 'Vertical lift, matched with pusher side'],
       ['Park position', 'Raised above cake path'], ['Air source', '0.6 – 1 MPa'],
-      ['Function', 'Outfeed-side stop during positioning only'],
+      ['Function', 'Outfeed-side stop paired with the positioning pusher'],
     ]);
   reg(components, 'pusher', 'Positioning Pusher Unit', '定位推板机构', pusher.group,
     V(-4.2, 13.8, 0), V(-8.5, 17.5, 4.5), V(-1, 4, -1.5), [
