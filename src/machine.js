@@ -301,14 +301,10 @@ function buildLimitStop() {
   // can travel to the sink without crossing a vertical obstruction.
   box(g, 1.05, 0.3, 1.05, MAT.brushed, X, BELT_TOP + 0.08, OUTER_Z);
   box(g, 0.82, 4.35, 0.72, MAT.alu, X, 10.58, OUTER_Z);
-  box(g, 0.95, 0.18, 0.95, MAT.black, X, 12.82, OUTER_Z);
-  box(g, 0.95, 0.18, 0.95, MAT.black, X, 8.35, OUTER_Z);
 
   box(g, 0.95, 0.28, BEAM_DEPTH, MAT.brushed, X, 12.7, BEAM_CENTER_Z);
   box(g, 0.58, 0.18, BEAM_DEPTH - 0.35, MAT.aluDark, X, 12.28, BEAM_CENTER_Z + 0.18);
   cyl(g, 0.36, 1.5, MAT.alu, X, 13.6, 4.1, 'y', 20);
-  box(g, 0.85, 0.12, 0.85, MAT.black, X, 14.4, 4.1);
-  box(g, 0.85, 0.12, 0.85, MAT.black, X, 12.9, 4.1);
   cyl(g, 0.07, 0.3, MAT.btnBlue, X + 0.42, 14.2, 4.3, 'x', 8);
   for (const sz of GUIDE_ZS) cyl(g, 0.22, 0.6, MAT.steel, X, 12.95, sz, 'y', 16);
 
