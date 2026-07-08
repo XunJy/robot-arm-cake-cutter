@@ -292,30 +292,34 @@ function buildOperatorPanel() {
 function buildLimitStop() {
   const g = new THREE.Group();
   const X = PLATE_X + 0.01; // inner face sits just ahead of the cake front edge
-  const GUIDE_ZS = [-3.0, 3.0];
+  const OUTER_Z = 5.45;
+  const GUIDE_ZS = [3.25, 4.75];
+  const BEAM_CENTER_Z = 1.2;
+  const BEAM_DEPTH = 8.5;
 
-  // Match the upstream positioning pusher: a gate-style cross beam with
-  // support shafts on both conveyor rails, so both locating units read as one
-  // paired mechanism instead of two unrelated designs.
-  for (const sz of [-5.4, 5.4]) {
-    cyl(g, 0.14, 4.4, MAT.chrome, X, 10.6, sz, 'y', 16);
-    cyl(g, 0.26, 0.12, MAT.steel, X, 8.45, sz, 'y', 16);
-  }
-  box(g, 0.95, 0.28, 11.2, MAT.brushed, X, 12.7, 0);
-  cyl(g, 0.36, 1.5, MAT.alu, X, 13.6, 0, 'y', 20);
-  box(g, 0.85, 0.12, 0.85, MAT.black, X, 14.4, 0);
-  box(g, 0.85, 0.12, 0.85, MAT.black, X, 12.9, 0);
-  cyl(g, 0.07, 0.3, MAT.btnBlue, X + 0.42, 14.2, 0.2, 'x', 8);
+  // One-sided outer support: the wash-side inner post is removed so the knife
+  // can travel to the sink without crossing a vertical obstruction.
+  box(g, 1.05, 0.3, 1.05, MAT.brushed, X, BELT_TOP + 0.08, OUTER_Z);
+  box(g, 0.82, 4.35, 0.72, MAT.alu, X, 10.58, OUTER_Z);
+  box(g, 0.95, 0.18, 0.95, MAT.black, X, 12.82, OUTER_Z);
+  box(g, 0.95, 0.18, 0.95, MAT.black, X, 8.35, OUTER_Z);
+
+  box(g, 0.95, 0.28, BEAM_DEPTH, MAT.brushed, X, 12.7, BEAM_CENTER_Z);
+  box(g, 0.58, 0.18, BEAM_DEPTH - 0.35, MAT.aluDark, X, 12.28, BEAM_CENTER_Z + 0.18);
+  cyl(g, 0.36, 1.5, MAT.alu, X, 13.6, 4.1, 'y', 20);
+  box(g, 0.85, 0.12, 0.85, MAT.black, X, 14.4, 4.1);
+  box(g, 0.85, 0.12, 0.85, MAT.black, X, 12.9, 4.1);
+  cyl(g, 0.07, 0.3, MAT.btnBlue, X + 0.42, 14.2, 4.3, 'x', 8);
   for (const sz of GUIDE_ZS) cyl(g, 0.22, 0.6, MAT.steel, X, 12.95, sz, 'y', 16);
 
   const moving = new THREE.Group();
-  box(moving, 0.5, 0.16, 7.0, MAT.steel, X, 9.9, 0);
+  box(moving, 0.5, 0.16, 6.25, MAT.steel, X, 9.9, 0.35);
   for (const sz of GUIDE_ZS) cyl(moving, 0.09, 4.1, MAT.chrome, X, 11.5, sz, 'y', 12);
-  cyl(moving, 0.09, 3.4, MAT.chrome, X, 11.3, 0, 'y', 12);
+  cyl(moving, 0.09, 3.4, MAT.chrome, X, 11.3, 4.1, 'y', 12);
   const plateMat = new THREE.MeshStandardMaterial({ color: 0xd8cfa4, metalness: 0.3, roughness: 0.55 });
-  box(moving, 0.18, 1.1, 7.0, plateMat, X + 0.06, 9.17, 0);
+  box(moving, 0.18, 1.1, 5.95, plateMat, X + 0.06, 9.17, 0.15);
   moving.userData.downY = 0;
-  moving.userData.upY = 1.35;
+  moving.userData.upY = 1.45;
   moving.userData.setEngaged = (k) => {
     const t = THREE.MathUtils.clamp(k, 0, 1);
     moving.position.y = moving.userData.upY * (1 - t);
@@ -527,9 +531,9 @@ export function buildMachine(scene) {
     ]);
   reg(components, 'limitStop', 'Limit Stop Unit', '限位机构', limit.group,
     V(PLATE_X, 9.55, 3.1), V(6.2, 12.4, -4.2), V(0.5, 1.4, 2), [
-      ['Type', 'Gate-style drop-down locating plate'], ['Stroke', 'Vertical lift, matched with pusher side'],
+      ['Type', 'One-sided outer support + drop-down plate'], ['Stroke', 'Vertical lift, inner wash side open'],
       ['Park position', 'Raised above cake path'], ['Air source', '0.6 – 1 MPa'],
-      ['Function', 'Outfeed-side stop paired with the positioning pusher'],
+      ['Function', 'Outfeed-side stop with clearance for knife washing'],
     ]);
   reg(components, 'pusher', 'Positioning Pusher Unit', '定位推板机构', pusher.group,
     V(-4.2, 13.8, 0), V(-8.5, 17.5, 4.5), V(-1, 4, -1.5), [
