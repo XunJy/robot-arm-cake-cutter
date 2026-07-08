@@ -296,6 +296,10 @@ function buildLimitStop() {
   const GUIDE_ZS = [3.25, 4.75];
   const BEAM_CENTER_Z = 1.2;
   const BEAM_DEPTH = 8.5;
+  const PLATE_INNER_Z = -2.85;
+  const PLATE_OUTER_Z = 4.95;
+  const PLATE_CENTER_Z = (PLATE_INNER_Z + PLATE_OUTER_Z) / 2;
+  const PLATE_DEPTH = PLATE_OUTER_Z - PLATE_INNER_Z;
 
   // One-sided outer support: the wash-side inner post is removed so the knife
   // can travel to the sink without crossing a vertical obstruction.
@@ -309,11 +313,15 @@ function buildLimitStop() {
   for (const sz of GUIDE_ZS) cyl(g, 0.22, 0.6, MAT.steel, X, 12.95, sz, 'y', 16);
 
   const moving = new THREE.Group();
-  box(moving, 0.5, 0.16, 6.25, MAT.steel, X, 9.9, 0.35);
+  box(moving, 0.5, 0.16, PLATE_DEPTH + 0.18, MAT.steel, X, 9.9, PLATE_CENTER_Z);
   for (const sz of GUIDE_ZS) cyl(moving, 0.09, 4.1, MAT.chrome, X, 11.5, sz, 'y', 12);
   cyl(moving, 0.09, 3.4, MAT.chrome, X, 11.3, 4.1, 'y', 12);
   const plateMat = new THREE.MeshStandardMaterial({ color: 0xd8cfa4, metalness: 0.3, roughness: 0.55 });
-  box(moving, 0.18, 1.1, 5.95, plateMat, X + 0.06, 9.17, 0.15);
+  box(moving, 0.18, 1.1, PLATE_DEPTH, plateMat, X + 0.06, 9.17, PLATE_CENTER_Z);
+  box(moving, 0.34, 0.34, 1.9, MAT.steel, X + 0.03, 9.74, 4.0);
+  for (const sz of [...GUIDE_ZS, 4.1]) {
+    box(moving, 0.36, 0.26, 0.34, MAT.steel, X + 0.03, 9.57, sz);
+  }
   moving.userData.downY = 0;
   moving.userData.upY = 1.45;
   moving.userData.setEngaged = (k) => {
